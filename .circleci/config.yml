@@ -2,24 +2,28 @@ version: 2.1
 
 # Define the jobs we want to run for this project
 jobs:
-  print_hello:
+  save_hello_world:
     docker:
       - image: cimg/base:2023.03
     steps:
-      - checkout
-      - run: echo "Hello "
-  print_world:
+      - run: echo "hello world" > ~/output.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - output.txt
+  print_hello_world:
     docker:
       - image: cimg/base:2023.03
     steps:
-      - checkout
-      - run: echo "World"
+      - attach_workspace:
+          at: ~/
+      - run: cat ~/output.txt
 
 # Orchestrate our job run sequence
 workflows:
   build_and_test:
     jobs:
-      - print_hello
-      - print_world:
+      - save_hello_world
+      - print_hello_world:
           requires:
-            - print_hello
+            - save_hello_world
