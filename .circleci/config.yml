@@ -2,28 +2,48 @@ version: 2.1
 
 # Define the jobs we want to run for this project
 jobs:
-  save_hello_world:
+  build:
     docker:
-      - image: cimg/base:2023.03
+      - image: circleci/node:10.8.0
+    working_directory: ~/LearnCI
     steps:
-      - run: echo "hello world" > ~/output.txt
-      - persist_to_workspace:
-          root: ~/
+      - checkout
+      - run: npm i
+      - save_cache:
+          key: "npm-packages"
           paths:
-            - output.txt
-  print_hello_world:
+            - /src/node-modules
+      - run: npm run lint
+  test:
     docker:
-      - image: cimg/base:2023.03
+      - image: circleci/node:10.8.0
+    working_directory: ~/LearnCI
     steps:
-      - attach_workspace:
-          at: ~/
-      - run: cat ~/output.txt
+      - checkout
+      - run: npm i
+      - restore_cache:
+          keys:
+            - "npm-packages"
+      - run: npm run test
+  analyze:
+    docker:
+      - image: circleci/node:10.8.0
+    working_directory: ~/LearnCI
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - "npm-packages"
+      - run: npm audit
 
 # Orchestrate our job run sequence
 workflows:
   build_and_test:
     jobs:
-      - save_hello_world
-      - print_hello_world:
+      - build
+      - test:
           requires:
-            - save_hello_world
+            - build
+      - analyze:
+          requires:
+            - test

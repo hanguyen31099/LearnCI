@@ -1,0 +1,19 @@
+{
+  "name": "learnci",
+  "version": "1.0.0",
+  "description": "this file use to test Circle CI",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hanguyen31099/LearnCI.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hanguyen31099/LearnCI/issues"
+  },
+  "homepage": "https://github.com/hanguyen31099/LearnCI#readme"
+}
